@@ -119,7 +119,7 @@ macro(project name)
     string(REPLACE ";" " " components_kconfig_files "${kconfig_defaults_files_args}")
     string(REPLACE ";" " " components_kconfig_files "${components_kconfig_files}")
     set(generate_config_cmd ${python}  ${SDK_PATH}/tools/kconfig/genconfig.py
-                            --kconfig "${SDK_PATH}/applications/Kconfig"
+                            --kconfig "${SDK_PATH}/tools/kconfig/Kconfig"
                             ${kconfig_defaults_files_args}
                             --menuconfig False
                             --env "SDK_PATH=${SDK_PATH}"
@@ -129,7 +129,7 @@ macro(project name)
                             --output header ${PROJECT_BINARY_DIR}/config/global_config.h
                             )
     set(generate_config_cmd2 ${python}  ${SDK_PATH}/tools/kconfig/genconfig.py
-                            --kconfig "${SDK_PATH}/applications/Kconfig"
+                            --kconfig "${SDK_PATH}/tools/kconfig/Kconfig"
                             ${kconfig_defaults_files_args}
                             --menuconfig True
                             --env "SDK_PATH=${SDK_PATH}"
@@ -182,7 +182,7 @@ macro(project name)
     # Declare project # This function will cler flags!
     _project(${name} ASM C CXX)
     
-    include(${SDK_PATH}/tools/cmake/compile_flags.cmake)
+    include(${SDK_PATH}/tools/cmake/util/compile_flags.cmake)
 
     # Add dependence: update configfile, append time and git info for global config header file
     # we didn't generate build info for cmake and makefile for if we do, it will always rebuild cmake
@@ -200,19 +200,19 @@ macro(project name)
     add_dependencies(${name} gen_exe_src)
     
     # Sort component according to priority.conf config file
-    set(component_priority_conf_file "${PROJECT_PATH}/compile/priority.conf")
-    set(sort_components ${python}  ${SDK_PATH}/tools/cmake/sort_components.py
-                                   ${component_priority_conf_file} ${components_dirs}
-                        )
-    execute_process(COMMAND ${sort_components} OUTPUT_VARIABLE component_dirs_sorted RESULT_VARIABLE cmd_res)
-    if(cmd_res EQUAL 2)
-        message(STATUS "No components priority config file")
-        set(component_dirs_sorted ${components_dirs})
-    elseif(cmd_res EQUAL 0)
-        message(STATUS "Config components priority success")
-    else()
-        message(STATUS "Components priority config fail ${component_dirs_sorted}, check config file:${component_priority_conf_file}")
-    endif()
+    #set(component_priority_conf_file "${PROJECT_PATH}/compile/priority.conf")
+    #set(sort_components ${python}  ${SDK_PATH}/tools/cmake/sort_components.py
+    #                               ${component_priority_conf_file} ${components_dirs}
+    #                    )
+    #execute_process(COMMAND ${sort_components} OUTPUT_VARIABLE component_dirs_sorted RESULT_VARIABLE cmd_res)
+    #if(cmd_res EQUAL 2)
+    #    message(STATUS "No components priority config file")
+    #    set(component_dirs_sorted ${components_dirs})
+    #elseif(cmd_res EQUAL 0)
+    #    message(STATUS "Config components priority success")
+    #else()
+    #    message(STATUS "Components priority config fail ${component_dirs_sorted}, check config file:${component_priority_conf_file}")
+    #endif()
 
     # Call CMakeLists.txt
     foreach(component_dir ${component_dirs_sorted})
@@ -233,6 +233,6 @@ macro(project name)
     target_link_libraries(${name} code)
 
     # Add binary
-    include("${SDK_PATH}/tools/cmake/gen_binary.cmake")
+    include("${SDK_PATH}/tools/cmake/util/gen_binary.cmake")
 
 endmacro()
