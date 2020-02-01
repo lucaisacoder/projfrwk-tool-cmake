@@ -1,11 +1,11 @@
 # Select library type
-set(_PN ${PROJECT_NAME})
-option(BUILD_SHARED_LIBS "Build ${_PN} as a shared library." ON)
-if(BUILD_SHARED_LIBS)
-  set(LIBRARY_TYPE SHARED)
-else()
-  set(LIBRARY_TYPE STATIC)
-endif()
+#set(_PN ${PROJECT_NAME})
+#option(BUILD_SHARED_LIBS "Build ${_PN} as a shared library." ON)
+#if(BUILD_SHARED_LIBS)
+#  set(LIBRARY_TYPE SHARED)
+#else()
+#  set(LIBRARY_TYPE STATIC)
+#endif()
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -18,7 +18,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # Target
-add_library(${LIBRARY_NAME} ${LIBRARY_TYPE} ${SOURCES} ${HEADERS})
+include_directories(${DIR_INCS})
+add_executable(${LIBRARY_NAME} ${SOURCES})
 
 # Install library
 install(TARGETS ${LIBRARY_NAME}
@@ -27,12 +28,3 @@ install(TARGETS ${LIBRARY_NAME}
   LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
   ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT stlib
   COMPONENT dev)
-
-# Create 'version.h'
-configure_file(cmake/version.h.in
-  "${CMAKE_CURRENT_BINARY_DIR}/version.h" @ONLY)
-set(HEADERS ${HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/version.h)
-
-# Install headers
-install(FILES ${HEADERS}
-  DESTINATION "${INSTALL_INCLUDE_DIR}/${LIBRARY_FOLDER}" )

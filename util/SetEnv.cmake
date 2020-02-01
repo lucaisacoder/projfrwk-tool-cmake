@@ -3,25 +3,33 @@ string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
 
 # Version variables
-#set(MAJOR_VERSION 0)
-#set(MINOR_VERSION 1)
-#set(PATCH_VERSION 0)
-#set(PROJECT_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
+set(MAJOR_VERSION 0)
+set(MINOR_VERSION 1)
+set(PATCH_VERSION 0)
+set(PROJECT_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
 # INSTALL_LIB_DIR
-set(INSTALL_LIB_DIR lib CACHE PATH "Relative instalation path for libraries")
+set(INSTALL_LIB_DIR lib
+    CACHE PATH "Relative instalation path for libraries")
 
 # INSTALL_BIN_DIR
-set(INSTALL_BIN_DIR bin CACHE PATH "Relative instalation path for executables")
+set(INSTALL_BIN_DIR bin
+    CACHE PATH "Relative instalation path for executables")
 
 # INSTALL_INCLUDE_DIR
-set(INSTALL_INCLUDE_DIR include CACHE PATH "Relative instalation path for header files")
+set(INSTALL_INCLUDE_DIR include
+    CACHE PATH "Relative instalation path for header files")
 
 # INSTALL_CMAKE_DIR
-set(DEF_INSTALL_CMAKE_DIR lib/CMake/${PROJECT_NAME})
-set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Relative instalation path for CMake files")
+if(WIN32 AND NOT CYGWIN)
+  set(DEF_INSTALL_CMAKE_DIR CMake)
+else()
+  set(DEF_INSTALL_CMAKE_DIR lib/CMake/${PROJECT_NAME})
+endif()
+set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR}
+    CACHE PATH "Relative instalation path for CMake files")
 
-# Convert relative path to absolute path
+# Convert relative path to absolute path (needed later on)
 foreach(substring LIB BIN INCLUDE CMAKE)
   set(var INSTALL_${substring}_DIR)
   if(NOT IS_ABSOLUTE ${${var}})
@@ -36,11 +44,13 @@ include_directories(
   "${PROJECT_BINARY_DIR}")
 
 # Library name (by default is the project name in lowercase)
+# Example: libfoo.so
 if(NOT LIBRARY_NAME)
   set(LIBRARY_NAME ${PROJECT_NAME_LOWERCASE})
 endif()
 
 # Library folder name (by default is the project name in lowercase)
+# Example: #include <foo/foo.h>
 if(NOT LIBRARY_FOLDER)
   set(LIBRARY_FOLDER ${PROJECT_NAME_LOWERCASE})
 endif()
