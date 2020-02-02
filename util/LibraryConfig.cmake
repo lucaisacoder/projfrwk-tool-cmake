@@ -19,6 +19,7 @@ endif()
 
 # Target
 include_directories(${DIR_INCS})
+add_definitions(${DEFINITION})
 add_library(${LIBRARY_NAME} ${LIBRARY_TYPE} ${SOURCES})
 
 # Install library
