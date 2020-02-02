@@ -18,14 +18,32 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # Target
-include_directories(${DIR_INCS})
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${REQ_LIBS_PATH})
+#message("000000 CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${REQ_LIBS_PATH}")
+set(CMAKE_PREFIX_PATH ${REQ_LIBS_PATH})
+#message("0000000 CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
+set(REQ_LIBS_FOUND "")
+foreach(lib ${REQ_LIBS})
+  string(TOLOWER ${lib} LIB_LOWERCASE)
+  string(TOUPPER ${lib} LIB_UPPERCASE)
+  #message("debug: --- all libs : ${lib} ${LIB_LOWERCASE}")
+  find_package(${LIB_LOWERCASE} REQUIRED)
+  if(NOT ${LIB_LOWERCASE}_FOUND)
+    message("ERROR: cannot found lib ${LIB_LOWERCASE}")
+  else()
+    list(APPEND REQ_LIBS_FOUND ${LIB_LOWERCASE})
+    list(APPEND REQ_INC_FOUND ${${LIB_UPPERCASE}_INCLUDE_DIRS})
+  endif()
+endforeach()
+
+include_directories(${DIR_INCS} ${REQ_INC_FOUND})
+#message("REQ_INC_FOUND = ${REQ_INC_FOUND}")
 add_definitions(${DEFINITION})
 add_executable(${LIBRARY_NAME} ${SOURCES})
+target_link_libraries(${LIBRARY_NAME} ${REQ_LIBS_FOUND})
 
 # Install library
 install(TARGETS ${LIBRARY_NAME}
   EXPORT ${PROJECT_EXPORT}
   RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
-  LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
-  ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT stlib
   COMPONENT dev)
