@@ -40,6 +40,7 @@ include_directories(${DIR_INCS} ${REQ_INC_FOUND})
 #message("REQ_INC_FOUND = ${REQ_INC_FOUND}")
 add_definitions(${DEFINITION})
 add_executable(${LIBRARY_NAME} ${SOURCES})
+message("000000-----9000000 REQ_LIBS_FOUND=${REQ_LIBS_FOUND}")
 target_link_libraries(${LIBRARY_NAME} ${REQ_LIBS_FOUND})
 
 # Install library
