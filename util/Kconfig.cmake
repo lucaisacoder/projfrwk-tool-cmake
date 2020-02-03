@@ -1,23 +1,8 @@
-
-
-
-
-
-
-set(gen_kconfig_cmd ${python}  ${SDK_PATH}/tools/kconfig/genconfig.py
-                        --kconfig "${SDK_PATH}/Kconfig"
-                        ${kconfig_defaults_files_args}
+set(gen_kconfig_cmd ${python}  ${SDK_SOURCE_DIR}/tools/kconfig/kconfig.py
+                        --kconfig "${SDK_SOURCE_DIR}/tools/kconfig/Kconfig"
                         --menuconfig True
-                        --env "SDK_PATH=${SDK_PATH}"
-                        --env "PROJECT_PATH=${PROJECT_SOURCE_DIR}"
-                        --output makefile ${PROJECT_BINARY_DIR}/config/global_config.mk
-                        --output cmake  ${PROJECT_BINARY_DIR}/config/global_config.cmake
-                        --output header ${PROJECT_BINARY_DIR}/config/global_config.h
                         )
-
-
-
-
-
-
+message("gen_kconfig_cmd ${python}  ${SDK_SOURCE_DIR}/tools/kconfig/kconfig.py
+                        --kconfig "${SDK_SOURCE_DIR}/tools/kconfig/Kconfig"
+                        --menuconfig True")
 add_custom_target(menuconfig COMMAND ${gen_kconfig_cmd})
